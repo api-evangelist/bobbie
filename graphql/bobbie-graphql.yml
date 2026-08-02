@@ -1,0 +1,55 @@
+generated: '2026-08-02'
+method: probed
+source: https://www.hibobbie.com/api/2026-04/graphql.json
+description: >-
+  Bobbie's storefront runs on Shopify, and the Shopify Storefront GraphQL API is
+  served from Bobbie's own host at https://www.hibobbie.com/api/<version>/graphql.json.
+  Introspection is ANONYMOUS on this host — the full schema was retrieved without a
+  Storefront access token on 2026-08-02 and the SDL is saved verbatim-derived from that
+  introspection response.
+endpoint: https://www.hibobbie.com/api/2026-04/graphql.json
+endpoint_template: https://www.hibobbie.com/api/{version}/graphql.json
+introspection:
+  gated: false
+  verified: '2026-08-02'
+  http_status: 200
+  content_type: application/json
+schema:
+  file: bobbie-storefront.graphql
+  format: SDL
+  derived_from: GraphQL introspection response (__schema)
+  query_type: QueryRoot
+  mutation_type: Mutation
+  subscription_type: null
+  types_total: 416
+  types_by_kind:
+    object: 262
+    input_object: 53
+    enum: 62
+    union: 16
+    interface: 10
+    scalar: 13
+  query_fields: 35
+  mutation_fields: 41
+  deprecated_fields: 54
+  relay_connections: 28
+platform:
+  vendor: Shopify
+  product: Storefront API
+  vendor_docs: https://shopify.dev/docs/api/storefront
+  note: >-
+    The schema is Shopify's platform contract as deployed on Bobbie's domain, not a
+    Bobbie-authored API. It is recorded here because it is the machine-readable contract
+    an integrator or agent actually calls when talking to Bobbie.
+shop:
+  name: Bobbie
+  primary_domain: https://www.hibobbie.com
+  myshopify_domain: hellobobbie.myshopify.com
+  shop_id: '6622806101'
+  verified_via: '{shop{name primaryDomain{url}}}'
+x-evidence:
+  fetched: '2026-08-02'
+  url: https://www.hibobbie.com/api/2026-04/graphql.json
+  method: POST
+  http_status: 200
+  introspection_bytes: 759848

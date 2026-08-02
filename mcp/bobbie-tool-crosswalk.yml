@@ -1,0 +1,141 @@
+generated: '2026-08-02'
+method: derived
+source: mcp/bobbie-mcp.yml + graphql/bobbie-storefront.graphql
+description: >-
+  Bobbie exposes no OpenAPI. Its two machine-readable surfaces are the Shopify
+  Storefront GraphQL API (anonymously introspectable at
+  https://www.hibobbie.com/api/2026-04/graphql.json) and the Storefront MCP server at
+  https://www.hibobbie.com/api/mcp. This crosswalk binds each verified MCP tool to the
+  GraphQL field(s) that back it, so a tool inherits a real input contract from the SDL
+  rather than a guessed one. Every GraphQL field named below was grepped out of
+  graphql/bobbie-storefront.graphql; every MCP tool name came from a live tools/list.
+surfaces:
+  openapi:
+    present: false
+    note: >-
+      No OpenAPI/Swagger found on www.hibobbie.com, hibobbie.com, medical.hibobbie.com
+      or hellobobbie.myshopify.com (/openapi.json, /openapi.yaml, /swagger.json,
+      /api-docs all 404 on 2026-08-02).
+  graphql:
+    endpoint: https://www.hibobbie.com/api/2026-04/graphql.json
+    gated: false
+    introspection_verified: '2026-08-02'
+    file: graphql/bobbie-storefront.graphql
+  mcp:
+    - endpoint: https://www.hibobbie.com/api/mcp
+      gated: false
+      tools_list_verified: '2026-08-02'
+    - endpoint: https://www.hibobbie.com/api/ucp/mcp
+      gated: true
+      note: requires a UCP agent profile URI; tools/list returned -32001
+  rest_json:
+    note: >-
+      Bobbie's /llms.txt also publishes unauthenticated read-only JSON endpoints
+      (/products/{handle}.json, /collections/{handle}/products.json). These are Shopify
+      storefront JSON views, not a described API — verified 200 but no spec exists.
+crosswalk:
+  - tool: search_catalog
+    category: catalog
+    graphql: [search, products, predictiveSearch]
+    rest: []
+    binding: graphql
+    confidence: high
+    note: >-
+      Free-text + filtered product search. QueryRoot.search(query, types, productFilters,
+      first/after) and QueryRoot.products(query, filters, sortKey) are the backing fields;
+      predictiveSearch covers the typeahead variant.
+  - tool: get_product_details
+    category: catalog
+    graphql: [product, productByHandle, productRecommendations]
+    rest: []
+    binding: graphql
+    confidence: high
+    note: >-
+      product(id:) / productByHandle(handle:) with selectedOptions to resolve the
+      variant, matching the tool's product_id + options + country + language inputs
+      (country/language map to the @inContext directive).
+  - tool: get_cart
+    category: cart
+    graphql: [cart]
+    rest: []
+    binding: graphql
+    confidence: high
+    note: QueryRoot.cart(id:) returns lines, deliveryGroups, discountAllocations and checkoutUrl.
+  - tool: update_cart
+    category: cart
+    graphql:
+      - cartCreate
+      - cartLinesAdd
+      - cartLinesUpdate
+      - cartLinesRemove
+      - cartBuyerIdentityUpdate
+      - cartDeliveryAddressesAdd
+      - cartDeliveryAddressesReplace
+      - cartSelectedDeliveryOptionsUpdate
+      - cartDiscountCodesUpdate
+      - cartGiftCardCodesAdd
+      - cartNoteUpdate
+    rest: []
+    binding: graphql
+    confidence: high
+    note: >-
+      One MCP tool fans out to eleven GraphQL mutations — this is the clearest example
+      of the tool surface being a coarser projection of the contract. When cart_id is
+      omitted the tool behaves as cartCreate.
+  - tool: search_shop_policies_and_faqs
+    category: content
+    graphql: [shop, page, pages, article, articles]
+    rest: []
+    binding: graphql
+    confidence: medium
+    note: >-
+      Shop.refundPolicy / shippingPolicy / privacyPolicy / termsOfService /
+      subscriptionPolicy / contactInformation (all ShopPolicy) plus page/article content
+      are the underlying data, but the MCP tool answers in natural language over a
+      retrieval index rather than mapping 1:1 to a field selection.
+mcp_only:
+  - tool: search_shop_policies_and_faqs
+    reason: >-
+      Server-side retrieval/QA composite over policy + FAQ content. No single GraphQL
+      field returns the answer; the tool synthesises it.
+  - tool: search_catalog
+    reason: >-
+      The natural-language query mode has no GraphQL equivalent — QueryRoot.search takes
+      a Shopify search-syntax string, not free-form intent.
+graphql_only:
+  - capability: checkout completion
+    fields: [cartPrepareForCompletion, cartSubmitForCompletion, cartCompletionAttempt]
+    reason: Storefront MCP stops at the cart; completion is UCP-MCP or web checkout only.
+  - capability: customer accounts
+    fields:
+      - customer
+      - customerCreate
+      - customerAccessTokenCreate
+      - customerAccessTokenRenew
+      - customerAccessTokenDelete
+      - customerUpdate
+      - customerRecover
+      - customerReset
+      - customerAddressCreate
+      - customerAddressUpdate
+      - customerAddressDelete
+      - customerDefaultAddressUpdate
+    reason: No MCP tool touches customer identity; that surface is OIDC + GraphQL only.
+  - capability: content and merchandising
+    fields: [blog, blogs, article, articles, page, pages, menu, metaobject, metaobjects, collection, collections]
+    reason: Editorial/navigation content is reachable in GraphQL but has no MCP tool.
+  - capability: localization and commerce settings
+    fields: [localization, locations, paymentSettings, shopPayInstallmentsPricing, urlRedirects, sitemap, productTags, productTypes]
+    reason: No MCP tool exposes these.
+  - capability: Shop Pay payment request sessions
+    fields: [shopPayPaymentRequestSessionCreate, shopPayPaymentRequestSessionSubmit]
+    reason: Shop Pay handler surface, driven by the Shop skill rather than store MCP tools.
+rest_only: []
+coverage:
+  mcp_tools_named: 5
+  mcp_tools_bound: 5
+  mcp_only: 2
+  graphql_query_fields: 35
+  graphql_mutation_fields: 41
+  graphql_fields_with_a_tool: 15
+  openapi_operations: 0

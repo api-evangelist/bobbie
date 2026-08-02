@@ -1,0 +1,60 @@
+generated: '2026-08-02'
+method: probed
+source: https://www.hibobbie.com/.well-known/
+hosts_probed:
+  - https://www.hibobbie.com
+  - https://hibobbie.com
+  - https://medical.hibobbie.com
+  - https://account.hibobbie.com
+  - https://hellobobbie.myshopify.com
+host: https://www.hibobbie.com
+documents:
+  - path: /.well-known/ucp
+    status: 200
+    file: bobbie-ucp.json
+    standard: Universal Commerce Protocol (ucp.dev) merchant profile
+    note: >-
+      Declares UCP versions 2026-04-08 and 2026-01-23, the dev.ucp.shopping MCP service
+      endpoint, the cart/checkout/fulfillment/discount capabilities and the payment
+      handlers (Google Pay, shopify.card, Shop Pay).
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: bobbie-openid-configuration.json
+    standard: OpenID Connect Discovery 1.0
+    note: Shopify customer accounts; issuer https://shopify.com/authentication/6622806101
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: bobbie-oauth-authorization-server.json
+    standard: RFC 8414 OAuth 2.0 Authorization Server Metadata
+    note: Byte-identical to the openid-configuration document.
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+other_agent_discovery:
+  - path: /llms.txt
+    status: 200
+    file: llms/bobbie-llms.txt
+    note: Real agent instructions, not a docs index — see llms/.
+  - path: /agents.md
+    status: 200
+    file: llms/bobbie-agents.md
+    note: Bobbie names this the canonical agent-facing description; /llms.txt mirrors it.
+  - path: /robots.txt
+    status: 200
+misses:
+  - host: https://medical.hibobbie.com
+    result: all /.well-known/* probes 404
+  - host: https://account.hibobbie.com
+    result: all /.well-known/* probes 404 (jwks.json is served under /authentication/.well-known/)
+  - host: https://hellobobbie.myshopify.com
+    result: agent-card.json and agent.json 404; /llms.txt 200 (same document)
+x-evidence:
+  fetched: '2026-08-02'
+  method: 'curl -L HEAD/GET, User-Agent Mozilla/5.0'

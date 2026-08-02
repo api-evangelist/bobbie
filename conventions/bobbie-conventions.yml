@@ -1,0 +1,91 @@
+generated: '2026-08-02'
+method: derived
+source: graphql/bobbie-storefront.graphql + mcp/bobbie-mcp-tools.json + llms/bobbie-llms.txt
+docs: https://shopify.dev/docs/api/storefront
+description: >-
+  Cross-cutting request/response semantics for the surfaces Bobbie actually serves.
+  Derived from the anonymously introspected GraphQL SDL, the live MCP tools/list, the
+  discovery documents, and Bobbie's own published agent instructions.
+authentication:
+  style: none for storefront GraphQL and storefront MCP; OIDC/OAuth 2.0 authorization code + PKCE for customer accounts; UCP agent profile for the UCP MCP endpoint
+  detail: authentication/bobbie-authentication.yml
+idempotency:
+  supported: false
+  header: null
+  note: >-
+    No idempotency key is offered on any observed surface. The Storefront GraphQL cart
+    mutations are not idempotent, and the MCP update_cart tool exposes no idempotency
+    parameter. Retry safety comes from cart_id addressing (repeating update_cart with
+    the same add_items will add the items again), so agents must treat cart mutations as
+    at-most-once and reconcile with get_cart.
+pagination:
+  style: relay-cursor
+  applies_to: GraphQL connections (28 *Connection types in the SDL)
+  request_params: [first, last, after, before, reverse, sortKey]
+  response_fields: [edges, edges.node, edges.cursor, nodes, pageInfo.hasNextPage, pageInfo.hasPreviousPage, pageInfo.startCursor, pageInfo.endCursor]
+  mcp: >-
+    search_catalog returns paginated results with an initial limit; the tool documents a
+    pagination parameter for retrieving further pages.
+field_selection:
+  style: graphql-selection-set
+  note: GraphQL selection sets replace sparse-fieldset/expansion parameters entirely.
+metadata:
+  style: metafields and metaobjects
+  fields: [metafield, metafields, metaobject, metaobjects]
+  note: >-
+    Namespaced custom data (namespace + key) attached to products, variants, collections,
+    carts, customers and the shop. cartMetafieldsSet / cartMetafieldDelete mutate cart
+    metafields.
+localization:
+  mechanism: '@inContext directive'
+  params: [country, language, buyerIdentity, preferredLocationId]
+  mcp_equivalent: get_product_details takes country and language; llms.txt asks agents to pass context.address_country and context.currency
+versioning:
+  scheme: calendar-quarter path segment
+  pattern: /api/{YYYY-MM}/graphql.json
+  current: '2026-07'
+  detail: lifecycle/bobbie-lifecycle.yml
+error_envelope:
+  graphql:
+    transport_status: 200 with an errors[] array
+    fields:
+      - 'errors[].message'
+      - 'errors[].locations'
+      - 'errors[].path'
+      - 'errors[].extensions.code'
+    mutation_errors: >-
+      Mutations return typed userErrors payloads implementing DisplayableError
+      (field, message) — CartUserError, CustomerUserError, MetafieldsSetUserError,
+      SubmissionError, CompletionError.
+  mcp:
+    transport: JSON-RPC 2.0
+    fields: [error.code, error.message, error.data]
+    observed_example: '-32001 "UCP discovery failed" with data.code invalid_profile_url'
+  detail: errors/bobbie-problem-types.yml
+rate_limiting:
+  graphql:
+    style: query-cost based
+    signal: extensions.cost on every response (requestedQueryCost, actualQueryCost, throttleStatus)
+    observed: 'extensions.cost.requestedQueryCost returned on every probe'
+    headers: none
+  mcp:
+    style: per-IP
+    signal: HTTP 429
+    provider_statement: >-
+      "Respect rate limits. The MCP endpoint is rate-limited per IP. Back off on 429
+      responses." (/agents.md)
+  detail: null
+request_tracing:
+  request_id_header: null
+  note: No request-id/correlation header documented or observed.
+read_only_json:
+  note: >-
+    Unauthenticated Shopify storefront JSON views published in Bobbie's own agents.md —
+    /products/{handle}.json and /collections/{handle}/products.json (both verified 200).
+    Not a described API; no spec exists for them.
+cross_links:
+  authentication: authentication/bobbie-authentication.yml
+  scopes: scopes/bobbie-scopes.yml
+  errors: errors/bobbie-problem-types.yml
+  lifecycle: lifecycle/bobbie-lifecycle.yml
+  agentic_access: agentic-access/bobbie-agentic-access.yml

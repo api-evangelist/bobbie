@@ -1,0 +1,84 @@
+generated: '2026-08-02'
+method: probed
+source: 'https://www.hibobbie.com/api/2026-04/graphql.json (query publicApiVersions)'
+description: >-
+  Bobbie itself publishes no API versioning, deprecation or SLA policy. The versioning
+  contract that actually governs the surfaces served from hibobbie.com is Shopify's, and
+  it is machine-readable: the publicApiVersions query on Bobbie's own endpoint returns
+  the live support matrix, captured verbatim below on 2026-08-02.
+versioning:
+  scheme: calendar-quarter path segment
+  pattern: https://www.hibobbie.com/api/{YYYY-MM}/graphql.json
+  current: '2026-07'
+  probed_at: '2026-08-02'
+  probe: '{publicApiVersions{handle displayName supported}}'
+  versions:
+    - handle: '2025-10'
+      display_name: '2025-10'
+      supported: true
+    - handle: '2026-01'
+      display_name: '2026-01'
+      supported: true
+    - handle: '2026-04'
+      display_name: '2026-04'
+      supported: true
+    - handle: '2026-07'
+      display_name: '2026-07 (Latest)'
+      supported: true
+    - handle: '2026-10'
+      display_name: '2026-10 (Release candidate)'
+      supported: false
+    - handle: unstable
+      display_name: unstable
+      supported: false
+  policy_docs: https://shopify.dev/docs/api/usage/versioning
+  platform_inherited: true
+ucp_versioning:
+  scheme: dated protocol versions
+  supported: ['2026-04-08', '2026-01-23']
+  latest_stable: '2026-04-08'
+  source: https://www.hibobbie.com/.well-known/ucp
+  discovery: >-
+    Both versions are individually addressable at
+    https://hellobobbie.myshopify.com/.well-known/ucp/{version}
+deprecation:
+  policy_url: https://shopify.dev/docs/api/usage/versioning
+  platform_inherited: true
+  sunset_header: false
+  mechanism: >-
+    Quarterly version release with a supported/unsupported flag exposed through
+    publicApiVersions, plus @deprecated directives on individual schema fields.
+  deprecated_fields_in_current_schema: 54
+  bobbie_published_policy: false
+  note: >-
+    Recorded for accuracy, NOT wired as a Deprecation pointer — the policy is Shopify's
+    platform policy, not something Bobbie publishes or commits to.
+sla:
+  url: null
+  uptime_target: null
+  bobbie_published: false
+status_page:
+  url: null
+  bobbie_published: false
+  probes:
+    - https://status.hibobbie.com/ -> DNS failure
+  platform_status_page: https://www.shopifystatus.com/
+  note: >-
+    Bobbie operates no status page of its own. The platform status page is Shopify's and
+    is recorded here for context only — no StatusPage pointer is emitted.
+changelog:
+  bobbie_published: false
+  platform_changelog: https://shopify.dev/changelog
+deprecated_operations: []
+x-evidence:
+  - fetched: '2026-08-02'
+    url: https://www.hibobbie.com/api/2026-04/graphql.json
+    http_status: 200
+    query: publicApiVersions
+  - fetched: '2026-08-02'
+    url: https://www.hibobbie.com/.well-known/ucp
+    http_status: 200
+  - fetched: '2026-08-02'
+    url: https://status.hibobbie.com/
+    http_status: 000
+    result: no DNS record

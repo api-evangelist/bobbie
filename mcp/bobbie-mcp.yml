@@ -1,0 +1,117 @@
+generated: '2026-08-02'
+method: searched
+status: published
+source: https://www.hibobbie.com/api/mcp
+description: >-
+  Bobbie serves TWO live MCP endpoints from its own storefront host. The Shopify
+  Storefront MCP server at /api/mcp answered an anonymous tools/list with five real
+  tools and full JSON Schema input contracts; the UCP (Universal Commerce Protocol)
+  MCP server at /api/ucp/mcp is advertised in /llms.txt and /.well-known/ucp but
+  requires an agent profile URI before it will enumerate its tools.
+servers:
+  - name: bobbie-storefront-mcp
+    transport: http
+    url: https://www.hibobbie.com/api/mcp
+    protocol: MCP (JSON-RPC 2.0)
+    auth: none observed (anonymous tools/list returned 200)
+    tools_list:
+      verified: '2026-08-02'
+      http_status: 200
+      gated: false
+      tool_count: 5
+      file: bobbie-mcp-tools.json
+    vendor: Shopify Storefront MCP
+  - name: bobbie-ucp-mcp
+    transport: http
+    url: https://www.hibobbie.com/api/ucp/mcp
+    canonical_url: https://hellobobbie.myshopify.com/api/ucp/mcp
+    protocol: MCP (JSON-RPC 2.0) over the Universal Commerce Protocol
+    spec: https://ucp.dev/2026-04-08/specification/overview/
+    schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json
+    auth: >-
+      gated — anonymous tools/list returned JSON-RPC error -32001 "UCP discovery failed"
+      / invalid_profile_url ("Missing profile uri"). The agent must present a UCP agent
+      profile URI before the tool list is enumerable.
+    tools_list:
+      verified: '2026-08-02'
+      http_status: 422
+      gated: true
+      tool_count: null
+    advertised_tools:
+      note: >-
+        Names below are taken verbatim from the typical agent flow Bobbie publishes in
+        /llms.txt and /agents.md. Their input schemas require an authorized UCP
+        tools/list call and are NOT recorded here.
+      source: llms/bobbie-llms.txt
+      names:
+        - search_catalog
+        - create_cart
+        - create_checkout
+        - update_checkout
+        - complete_checkout
+tools:
+  - name: search_catalog
+    server: bobbie-storefront-mcp
+    description: >-
+      Search for products from the online store, hosted on Shopify. Supports natural
+      language queries, specific filter criteria, or both; at least one of query or
+      filters must be provided. Results are paginated.
+    input_properties: [meta, catalog]
+    required: []
+  - name: get_product_details
+    server: bobbie-storefront-mcp
+    description: >-
+      Look up a product by ID. Pass the options parameter to select a specific variant
+      for the product card; without options the first available variant is returned.
+    input_properties: [product_id, options, country, language]
+    required: [product_id]
+  - name: get_cart
+    server: bobbie-storefront-mcp
+    description: >-
+      Get the cart including items, shipping options, discount info, and checkout url
+      for a given cart id.
+    input_properties: [cart_id]
+    required: [cart_id]
+  - name: update_cart
+    server: bobbie-storefront-mcp
+    description: >-
+      Consolidated cart mutation — add/remove/update line items, buyer information,
+      delivery addresses, selected delivery options, discount codes, gift cards and
+      notes in one call. When creating a new cart only add_items is required.
+    input_properties:
+      - cart_id
+      - add_items
+      - update_items
+      - remove_line_ids
+      - buyer_identity
+      - delivery_addresses_to_add
+      - delivery_addresses_to_replace
+      - selected_delivery_options
+      - discount_codes
+      - gift_card_codes
+      - note
+    required: []
+  - name: search_shop_policies_and_faqs
+    server: bobbie-storefront-mcp
+    description: >-
+      Get facts about the store's policies, products or services — return policy,
+      shipping policy, phone number, hours of operation.
+    input_properties: [query, context]
+    required: [query]
+discovery:
+  llms_txt: https://www.hibobbie.com/llms.txt
+  agents_md: https://www.hibobbie.com/agents.md
+  ucp_profile: https://www.hibobbie.com/.well-known/ucp
+x-evidence:
+  - fetched: '2026-08-02'
+    url: https://www.hibobbie.com/api/mcp
+    method: 'POST tools/list'
+    http_status: 200
+    content_type: application/json
+    result: 5 tools with inputSchema
+  - fetched: '2026-08-02'
+    url: https://www.hibobbie.com/api/ucp/mcp
+    method: 'POST tools/list'
+    http_status: 422
+    content_type: application/json
+    result: 'JSON-RPC error -32001 UCP discovery failed (invalid_profile_url)'

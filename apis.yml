@@ -1,18 +1,99 @@
 aid: bobbie
 name: Bobbie
-description: 'Bobbie is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Bobbie is an American organic infant formula company founded in 2018 by Laura Modi and
+  Sarah Hardy — the only mom-founded, women-led infant formula manufacturer in the United
+  States, selling direct to parents at hibobbie.com and through Bobbie Medical for
+  healthcare professionals. Bobbie has no developer program, but its Shopify-hosted
+  storefront exposes a substantial machine-readable surface from its own domain: an
+  anonymously introspectable Storefront GraphQL API, a live Model Context Protocol server
+  with five catalog and cart tools, a Universal Commerce Protocol merchant profile at
+  /.well-known/ucp with UCP MCP commerce endpoints, OpenID Connect and RFC 8414 discovery
+  for customer accounts, and a provider-authored /agents.md (mirrored at /llms.txt) that
+  tells AI agents which surface to use and requires explicit buyer approval before any
+  agent completes a payment.
 url: https://raw.githubusercontent.com/api-evangelist/bobbie/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment-pipeline
+image: https://www.hibobbie.com/cdn/shop/files/Bobbie_Cardi_SocialShare_General_1dca0cca-95e0-467b-8eaa-5dd7f4df4675.jpg
 specificationVersion: '0.20'
 created: '2026-08-02'
 modified: '2026-08-02'
 tags:
 - Company
-apis: []
+- Consumer Packaged Goods
+- Infant Formula
+- Ecommerce
+- Direct to Consumer
+- Retail
+- Health
+- Nutrition
+- Agentic Commerce
+- Shopify
+- GraphQL
+- Model Context Protocol
+apis:
+- aid: bobbie:storefront-graphql
+  name: Bobbie Storefront GraphQL API
+  description: >-
+    The Shopify Storefront GraphQL API as served from Bobbie's own domain. Introspection
+    is anonymous — the full schema (416 types, 35 query fields, 41 mutations) was
+    retrieved without a Storefront access token on 2026-08-02. Covers the product
+    catalog, collections, selling plans (Bobbie's formula subscriptions), cart and
+    checkout preparation, editorial content, and customer accounts.
+  humanURL: https://shopify.dev/docs/api/storefront
+  baseURL: https://www.hibobbie.com/api/2026-04/graphql.json
+  tags:
+  - GraphQL
+  - Ecommerce
+  - Catalog
+  - Cart
+  properties:
+  - type: GraphQL
+    url: graphql/bobbie-storefront.graphql
+  - type: GraphQLManifest
+    url: graphql/bobbie-graphql.yml
+  - type: DataModel
+    url: data-model/bobbie-data-model.yml
+- aid: bobbie:storefront-mcp
+  name: Bobbie Storefront MCP Server
+  description: >-
+    A live Model Context Protocol server on Bobbie's storefront host. An anonymous
+    JSON-RPC tools/list returned five tools with full JSON Schema input contracts —
+    search_catalog, get_product_details, get_cart, update_cart and
+    search_shop_policies_and_faqs.
+  humanURL: https://www.hibobbie.com/agents.md
+  baseURL: https://www.hibobbie.com/api/mcp
+  tags:
+  - MCP
+  - Agents
+  - Ecommerce
+  properties:
+  - type: MCPServer
+    url: mcp/bobbie-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/bobbie-tool-crosswalk.yml
+- aid: bobbie:ucp-commerce
+  name: Bobbie UCP Agentic Commerce
+  description: >-
+    Bobbie implements the Universal Commerce Protocol for agent-driven commerce. The
+    merchant profile at /.well-known/ucp declares UCP 2026-04-08 and 2026-01-23, the
+    dev.ucp.shopping MCP service endpoint, the cart / checkout / fulfillment / discount
+    capabilities, and three payment handlers (Google Pay, Shopify card, Shop Pay). The
+    MCP endpoint requires a resolvable agent profile URI, and checkout completion
+    requires contemporaneous buyer approval.
+  humanURL: https://ucp.dev
+  baseURL: https://www.hibobbie.com/api/ucp/mcp
+  tags:
+  - UCP
+  - Agentic Commerce
+  - MCP
+  - Checkout
+  properties:
+  - type: AgenticAccess
+    url: agentic-access/bobbie-agentic-access.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +101,59 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
+  url: https://www.hibobbie.com/
+- type: Documentation
+  url: https://www.hibobbie.com/agents.md
+- type: LLMsTxt
+  url: llms/bobbie-llms.txt
+- type: WellKnown
+  url: well-known/bobbie-well-known.yml
+- type: Authentication
+  url: authentication/bobbie-authentication.yml
+- type: OAuthScopes
+  url: scopes/bobbie-scopes.yml
+- type: Conventions
+  url: conventions/bobbie-conventions.yml
+- type: ErrorCatalog
+  url: errors/bobbie-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/bobbie-lifecycle.yml
+- type: Conformance
+  url: conformance/bobbie-conformance.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: DomainSecurity
+  url: security/bobbie-domain-security.yml
+- type: Support
+  url: https://www.hibobbie.com/pages/help-center
+- type: HelpCenter
+  url: https://www.hibobbie.com/pages/help-center
+- type: Blog
+  url: https://milk-drunk.com/
+- type: Press
+  url: https://news.hibobbie.com/
+- type: SignUp
+  url: https://www.hibobbie.com/account/register
+- type: Login
+  url: https://account.hibobbie.com/
+- type: TermsOfService
+  url: https://www.hibobbie.com/policies/terms-of-service
+- type: PrivacyPolicy
+  url: https://www.hibobbie.com/policies/privacy-policy
+- type: RefundPolicy
+  url: https://www.hibobbie.com/policies/refund-policy
+- type: ShippingPolicy
+  url: https://www.hibobbie.com/policies/shipping-policy
+- type: About
+  url: https://www.hibobbie.com/pages/our-story
+- type: ContactUs
+  url: https://www.hibobbie.com/pages/contact
+- type: Careers
+  url: https://www.hibobbie.com/pages/careers
+- type: SecondaryMarket
   url: https://forgeglobal.com/bobbie_stock/
+x-enrichment:
+  date: '2026-08-02'
+  status: enriched
+  artifacts_added: 25
+  pass: local-v1

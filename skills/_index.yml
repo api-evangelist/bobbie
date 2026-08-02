@@ -1,0 +1,24 @@
+generated: '2026-08-02'
+method: generated
+source: mcp/bobbie-mcp.yml + graphql/bobbie-storefront.graphql + llms/bobbie-agents.md
+note: >-
+  Bobbie publishes no OpenAPI, so every operation named in these skills was grounded in
+  either a live MCP tools/list response or a field grepped out of the introspected
+  GraphQL SDL. No operation names are invented.
+skills:
+- file: bobbie-find-formula.md
+  name: Find and compare Bobbie infant formula
+  api: mcp/bobbie-mcp.yml
+  operations: [search_catalog, get_product_details, search, products, product, productByHandle]
+- file: bobbie-build-cart-and-checkout.md
+  name: Build a Bobbie cart and hand off to checkout
+  api: mcp/bobbie-mcp.yml
+  operations: [update_cart, get_cart, cartCreate, cartLinesAdd, cartBuyerIdentityUpdate, cartDeliveryAddressesAdd, cartSelectedDeliveryOptionsUpdate, cartPrepareForCompletion]
+- file: bobbie-subscribe-formula.md
+  name: Put Bobbie formula on a subscription selling plan
+  api: graphql/bobbie-storefront.graphql
+  operations: [product, sellingPlanGroups, sellingPlanAllocations, cartLinesAdd, cartLinesUpdate]
+- file: bobbie-answer-store-policy.md
+  name: Answer a shopper's Bobbie policy question
+  api: mcp/bobbie-mcp.yml
+  operations: [search_shop_policies_and_faqs, shop, pageByHandle]

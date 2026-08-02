@@ -1,0 +1,221 @@
+generated: '2026-08-02'
+method: derived
+source: graphql/bobbie-storefront.graphql
+description: >-
+  Entity-relationship graph derived from the GraphQL SDL anonymously introspected off
+  Bobbie's own host. Every entity and every relationship below was read from a field
+  declaration in the SDL — nothing is inferred beyond the type system. Identifiers are
+  Shopify global IDs (base64 gid://shopify/<Type>/<numeric-id>) unless noted.
+id_scheme:
+  format: 'gid://shopify/{Type}/{id}'
+  encoding: opaque ID scalar (globally unique, resolvable via the node/nodes queries)
+  handles: >-
+    Product, Collection, Page, Blog, Article and Metaobject also carry a human-readable
+    `handle` used in storefront URLs and in the *ByHandle queries.
+entities:
+  - name: Shop
+    root: true
+    key_fields: [id, name, description, primaryDomain, paymentSettings, shipsToCountries, moneyFormat, brand]
+    policies: [privacyPolicy, refundPolicy, shippingPolicy, termsOfService, subscriptionPolicy, legalNotice, contactInformation]
+  - name: Product
+    key_fields: [id, handle, title, description, productType, vendor, tags, availableForSale, priceRange, totalInventory, requiresSellingPlan, publishedAt]
+    domain: catalog
+  - name: ProductVariant
+    key_fields: [id, sku, barcode, title, price, compareAtPrice, availableForSale, quantityAvailable, selectedOptions, weight, weightUnit, requiresShipping]
+    domain: catalog
+  - name: ProductOption
+    key_fields: [id, name, optionValues]
+    domain: catalog
+  - name: SellingPlanGroup
+    key_fields: [appName, name, options, sellingPlans]
+    domain: subscriptions
+    note: How Bobbie's formula subscriptions are modelled.
+  - name: Collection
+    key_fields: [id, handle, title, description, image, updatedAt]
+    domain: catalog
+  - name: Cart
+    key_fields: [id, checkoutUrl, totalQuantity, cost, note, attributes, createdAt, updatedAt]
+    domain: commerce
+  - name: CartLine
+    key_fields: [id, quantity, cost, merchandise, sellingPlanAllocation, discountAllocations]
+    domain: commerce
+  - name: CartBuyerIdentity
+    key_fields: [email, phone, countryCode, customer, deliveryAddressPreferences]
+    domain: commerce
+  - name: CartDeliveryGroup
+    key_fields: [id, deliveryAddress, deliveryOptions, selectedDeliveryOption]
+    domain: fulfillment
+  - name: Customer
+    key_fields: [id, email, phone, firstName, lastName, displayName, acceptsMarketing, numberOfOrders, tags]
+    domain: identity
+    auth: requires a customer access token / OIDC-delegated session
+  - name: MailingAddress
+    key_fields: [id, address1, address2, city, province, country, zip, phone, formatted]
+    domain: identity
+  - name: Order
+    key_fields: [id, name, orderNumber, processedAt, financialStatus, fulfillmentStatus, totalPrice, totalRefunded, statusUrl]
+    domain: commerce
+    auth: reachable only through Customer.orders
+  - name: OrderLineItem
+    key_fields: [title, quantity, variant, discountedTotalPrice, originalTotalPrice]
+    domain: commerce
+  - name: Fulfillment
+    key_fields: [trackingCompany, trackingInfo, fulfillmentLineItems]
+    domain: fulfillment
+  - name: Blog
+    key_fields: [id, handle, title, authors]
+    domain: content
+  - name: Article
+    key_fields: [id, handle, title, content, excerpt, publishedAt, tags, image]
+    domain: content
+  - name: Page
+    key_fields: [id, handle, title, body, seo]
+    domain: content
+  - name: Menu
+    key_fields: [id, handle, title, items]
+    domain: navigation
+  - name: Metaobject
+    key_fields: [id, handle, type, fields, updatedAt]
+    domain: custom-data
+  - name: Metafield
+    key_fields: [id, namespace, key, type, value, reference]
+    domain: custom-data
+relationships:
+  - from: Product
+    to: ProductVariant
+    kind: has_many
+    via: variants
+  - from: ProductVariant
+    to: Product
+    kind: belongs_to
+    via: product
+  - from: Product
+    to: ProductOption
+    kind: has_many
+    via: options
+  - from: Product
+    to: Collection
+    kind: has_many
+    via: collections
+  - from: Collection
+    to: Product
+    kind: has_many
+    via: products
+  - from: Product
+    to: SellingPlanGroup
+    kind: has_many
+    via: sellingPlanGroups
+  - from: ProductVariant
+    to: SellingPlanAllocation
+    kind: has_many
+    via: sellingPlanAllocations
+  - from: Product
+    to: Image
+    kind: has_many
+    via: images
+  - from: Product
+    to: Media
+    kind: has_many
+    via: media
+  - from: Cart
+    to: CartLine
+    kind: has_many
+    via: lines
+  - from: CartLine
+    to: ProductVariant
+    kind: has_one
+    via: merchandise
+    note: merchandise is the Merchandise union, currently resolving to ProductVariant
+  - from: Cart
+    to: CartBuyerIdentity
+    kind: has_one
+    via: buyerIdentity
+  - from: CartBuyerIdentity
+    to: Customer
+    kind: has_one
+    via: customer
+  - from: Cart
+    to: CartDeliveryGroup
+    kind: has_many
+    via: deliveryGroups
+  - from: Cart
+    to: CartDiscountCode
+    kind: has_many
+    via: discountCodes
+  - from: Cart
+    to: AppliedGiftCard
+    kind: has_many
+    via: appliedGiftCards
+  - from: Customer
+    to: Order
+    kind: has_many
+    via: orders
+  - from: Customer
+    to: MailingAddress
+    kind: has_many
+    via: addresses
+  - from: Customer
+    to: MailingAddress
+    kind: has_one
+    via: defaultAddress
+  - from: Order
+    to: OrderLineItem
+    kind: has_many
+    via: lineItems
+  - from: Order
+    to: MailingAddress
+    kind: has_one
+    via: shippingAddress
+  - from: Order
+    to: MailingAddress
+    kind: has_one
+    via: billingAddress
+  - from: Order
+    to: Fulfillment
+    kind: has_many
+    via: successfulFulfillments
+  - from: OrderLineItem
+    to: ProductVariant
+    kind: has_one
+    via: variant
+  - from: Blog
+    to: Article
+    kind: has_many
+    via: articles
+  - from: Article
+    to: Blog
+    kind: belongs_to
+    via: blog
+  - from: Article
+    to: Comment
+    kind: has_many
+    via: comments
+  - from: Shop
+    to: ShopPolicy
+    kind: has_many
+    via: privacyPolicy/refundPolicy/shippingPolicy/termsOfService/subscriptionPolicy
+  - from: Product
+    to: Metafield
+    kind: has_many
+    via: metafields
+    note: HasMetafields is implemented by Product, ProductVariant, Collection, Cart, Customer, Order, Blog, Article, Page, Shop
+interfaces:
+  - name: Node
+    note: everything addressable by the node/nodes queries
+  - name: HasMetafields
+  - name: DisplayableError
+  - name: Media
+  - name: MenuItemResource
+  - name: MetafieldParentResource
+  - name: OnlineStorePublishable
+  - name: Trackable
+  - name: BaseCartLine
+  - name: MetafieldReference
+  - name: SearchResultItem
+counts:
+  entities_documented: 22
+  relationships_documented: 30
+  sdl_object_types: 262
+  sdl_interfaces: 10
+  sdl_unions: 16
+render: null

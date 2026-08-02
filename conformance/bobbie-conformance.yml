@@ -1,0 +1,89 @@
+generated: '2026-08-02'
+method: probed
+source: live probes of https://www.hibobbie.com on 2026-08-02
+description: >-
+  Which cross-cutting and industry standards the surfaces served from Bobbie's hosts
+  actually conform to. Every `conforms: true` below is backed by a document fetched or a
+  live response observed; every `false` is a probe that missed.
+standards:
+  - id: graphql
+    conforms: true
+    evidence: >-
+      Full __schema introspection succeeded anonymously at
+      https://www.hibobbie.com/api/2026-04/graphql.json (424 types, 35 query fields,
+      41 mutations). SDL saved at graphql/bobbie-storefront.graphql.
+  - id: relay-cursor-connections
+    conforms: true
+    evidence: 28 *Connection types with edges/node/cursor + PageInfo in the SDL.
+  - id: mcp
+    conforms: true
+    version: JSON-RPC 2.0 transport
+    evidence: >-
+      POST tools/list to https://www.hibobbie.com/api/mcp returned 200 with 5 tools each
+      carrying a JSON Schema inputSchema.
+  - id: ucp
+    conforms: true
+    version: '2026-04-08'
+    evidence: >-
+      /.well-known/ucp returns a Universal Commerce Protocol merchant profile declaring
+      supported versions, the dev.ucp.shopping MCP service, the checkout / cart /
+      fulfillment / discount capabilities and three payment handlers.
+    spec: https://ucp.dev/2026-04-08/specification/overview/
+  - id: openid-connect-discovery
+    conforms: true
+    evidence: >-
+      /.well-known/openid-configuration returns a valid OIDC discovery document
+      (issuer, authorization/token/jwks endpoints, RS256, S256 PKCE).
+  - id: oauth2
+    conforms: true
+    evidence: authorization_code + refresh_token + jwt-bearer grants advertised in discovery.
+  - id: rfc8414-oauth-authorization-server-metadata
+    conforms: true
+    evidence: /.well-known/oauth-authorization-server returns 200 with the same metadata document.
+  - id: rfc7636-pkce
+    conforms: true
+    evidence: 'code_challenge_methods_supported: [S256]'
+  - id: llms-txt
+    conforms: true
+    evidence: /llms.txt returns 200 text/markdown with real agent instructions.
+  - id: agents-md
+    conforms: true
+    evidence: /agents.md returns 200 text/markdown and is declared the canonical agent document.
+  - id: openapi
+    conforms: false
+    evidence: >-
+      /openapi.json, /openapi.yaml, /swagger.json, /api-docs all 404 across
+      www.hibobbie.com, hibobbie.com, medical.hibobbie.com and hellobobbie.myshopify.com.
+  - id: asyncapi
+    conforms: false
+    evidence: No event/streaming/webhook surface published to unauthenticated callers.
+  - id: a2a
+    conforms: false
+    evidence: >-
+      /.well-known/agent-card.json and /.well-known/agent.json returned 404 on every
+      host probed.
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: >-
+      No application/problem+json. Errors are GraphQL typed userErrors and JSON-RPC
+      error objects — see errors/bobbie-problem-types.yml.
+  - id: rfc9116-security-txt
+    conforms: false
+    evidence: /.well-known/security.txt returned 404 on every host probed.
+  - id: rfc8594-sunset-header
+    conforms: false
+    evidence: No Sunset/Deprecation headers observed; versioning is path-segment based.
+  - id: rfc8615-well-known-uris
+    conforms: true
+    evidence: Three /.well-known/ documents served (ucp, openid-configuration, oauth-authorization-server).
+regulatory_context:
+  note: >-
+    Bobbie is an FDA-regulated infant formula manufacturer. Those obligations
+    (21 CFR 106/107, infant formula registration and notification) attach to the product,
+    not to the API surface, and are recorded here only as context. No published API
+    compliance program, certification, or trust center was found — see
+    security/ for the probe results.
+  claims_found: []
+x-evidence:
+  fetched: '2026-08-02'
+  hosts: [www.hibobbie.com, hibobbie.com, medical.hibobbie.com, account.hibobbie.com, hellobobbie.myshopify.com]
