@@ -18,7 +18,7 @@ x-source: harvest:secondary-market
 x-tier: profiled
 x-tier-reason: enrichment-pipeline
 image: https://www.hibobbie.com/cdn/shop/files/Bobbie_Cardi_SocialShare_General_1dca0cca-95e0-467b-8eaa-5dd7f4df4675.jpg
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 created: '2026-08-02'
 modified: '2026-08-02'
 tags:
