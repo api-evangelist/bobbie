@@ -25,6 +25,19 @@ tags:
 - Company
 - Consumer Packaged Goods
 - Infant Formula
+- E-Commerce
+- Direct to Consumer
+- Retail
+- Health
+- Nutrition
+- Agentic Commerce
+- Shopify
+- GraphQL
+- MCP
+tags_raw:
+- Company
+- Consumer Packaged Goods
+- Infant Formula
 - Ecommerce
 - Direct to Consumer
 - Retail
@@ -47,6 +60,11 @@ apis:
   baseURL: https://www.hibobbie.com/api/2026-04/graphql.json
   tags:
   - GraphQL
+  - E-Commerce
+  - Catalog
+  - Cart
+  tags_raw:
+  - GraphQL
   - Ecommerce
   - Catalog
   - Cart
@@ -67,6 +85,10 @@ apis:
   humanURL: https://www.hibobbie.com/agents.md
   baseURL: https://www.hibobbie.com/api/mcp
   tags:
+  - MCP
+  - Agents
+  - E-Commerce
+  tags_raw:
   - MCP
   - Agents
   - Ecommerce
