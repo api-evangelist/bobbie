@@ -134,6 +134,11 @@ apis:
   humanURL: https://ucp.dev
   baseURL: https://www.hibobbie.com/api/ucp/mcp
   tags:
+  - Universal Commerce Protocol
+  - Agentic Commerce
+  - MCP
+  - Checkout
+  tags_raw:
   - UCP
   - Agentic Commerce
   - MCP
