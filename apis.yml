@@ -100,6 +100,9 @@ apis:
     url: graphql/bobbie-graphql.yml
   - type: DataModel
     url: data-model/bobbie-data-model.yml
+  x-surface: platform-generated
+  x-platform: shopify
+  x-platform-surface: storefront-graphql
 - aid: bobbie:storefront-mcp
   name: Bobbie Storefront MCP Server
   description: >-
@@ -122,6 +125,9 @@ apis:
     url: mcp/bobbie-mcp.yml
   - type: ToolCrosswalk
     url: mcp/bobbie-tool-crosswalk.yml
+  x-surface: platform-generated
+  x-platform: shopify
+  x-platform-surface: storefront-mcp
 - aid: bobbie:ucp-commerce
   name: Bobbie UCP Agentic Commerce
   description: >-
@@ -146,6 +152,9 @@ apis:
   properties:
   - type: AgenticAccess
     url: agentic-access/bobbie-agentic-access.yml
+  x-surface: platform-generated
+  x-platform: shopify
+  x-platform-surface: ucp
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
