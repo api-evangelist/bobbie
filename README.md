@@ -64,35 +64,110 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Bobbie is an American organic infant formula company founded in 2018 by Laura Modi and Sarah Hardy — the only mom-founded, women-led infant formula manufacturer in the United States, selling direct to parents at [hibobbie.com](https://www.hibobbie.com/) and through [Bobbie Medical](https://medical.hibobbie.com/) for healthcare professionals.
+Bobbie is an American organic infant formula company founded in 2018 by Laura Modi and Sarah Hardy — the only mom-founded, women-led infant formula manufacturer in the United States, selling direct to parents at hibobbie.com and through Bobbie Medical for healthcare professionals. Bobbie has no developer program, but its Shopify-hosted storefront exposes a substantial machine-readable surface from its own domain: an anonymously introspectable Storefront GraphQL API, a live Model Context Protocol server with five catalog and cart tools, a Universal Commerce Protocol merchant profile at /.well-known/ucp with UCP MCP commerce endpoints, OpenID Connect and RFC 8414 discovery for customer accounts, and a provider-authored /agents.md (mirrored at /llms.txt) that tells AI agents which surface to use and requires explicit buyer approval before any agent completes a payment.
 
-Bobbie runs no developer program and publishes no OpenAPI. It does, however, serve a real machine-readable surface from its own domain — and it publishes an explicit agent contract at [`/agents.md`](https://www.hibobbie.com/agents.md), which is rare for a DTC brand.
+**Areas:** Company · Consumer Packaged Goods · Infant Formula · E-Commerce · Direct to Consumer · Retail · Health · Nutrition · Agentic Commerce · Shopify · GraphQL · MCP
 
-## Surfaces
+## Bobbie on APIs.io
 
-| Surface | Endpoint | Auth |
-|---|---|---|
-| Storefront GraphQL API | `https://www.hibobbie.com/api/2026-04/graphql.json` | none — introspection is anonymous |
-| Storefront MCP server | `https://www.hibobbie.com/api/mcp` | none — 5 tools with full input schemas |
-| UCP agentic commerce (MCP) | `https://www.hibobbie.com/api/ucp/mcp` | requires a UCP agent profile URI |
-| UCP merchant profile | `https://www.hibobbie.com/.well-known/ucp` | none |
-| Customer accounts (OIDC / RFC 8414) | `https://account.hibobbie.com/authentication/oauth/*` | authorization code + PKCE |
-| Agent instructions | `/agents.md`, `/llms.txt` | none |
+Everything profiled for Bobbie is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/bobbie/](https://apis.io/providers/bobbie/)** — or go straight to one of the APIs or properties below.
 
-**Bobbie requires human approval on payment.** From its own `/agents.md`: *"Checkout requires human approval. Agents must not complete payment without explicit buyer consent."*
+### APIs (3)
 
-## Artifacts
+- [Bobbie Storefront GraphQL API](https://apis.io/apis/bobbie/storefront-graphql/) — The Shopify Storefront GraphQL API as served from Bobbie's own domain. Introspection is anonymous — the full schema (416 types, 35 query fields, 41…
+- [Bobbie Storefront MCP Server](https://apis.io/apis/bobbie/storefront-mcp/) — A live Model Context Protocol server on Bobbie's storefront host. An anonymous JSON-RPC tools/list returned five tools with full JSON Schema input contracts…
+- [Bobbie UCP Agentic Commerce](https://apis.io/apis/bobbie/ucp-commerce/) — Bobbie implements the Universal Commerce Protocol for agent-driven commerce. The merchant profile at /.well-known/ucp declares UCP 2026-04-08 and…
 
-- `graphql/` — the introspected Storefront SDL (416 types, 35 queries, 41 mutations) + manifest
-- `mcp/` — MCP server manifest, verbatim `tools/list` response, and the tool ↔ GraphQL crosswalk
-- `agentic-access/` — Bobbie's own published agent rules and flow
-- `llms/` — verbatim `llms.txt` and `agents.md`
-- `well-known/` — UCP profile, OIDC and OAuth authorization-server metadata
-- `authentication/`, `scopes/` — the three auth postures and the customer-account scopes
-- `conventions/`, `errors/`, `lifecycle/`, `conformance/`, `data-model/` — derived semantics
-- `skills/` — four Agent Skills grounded in real tool names and real GraphQL fields
-- `security/` — probed TLS/HSTS/DNS posture
+### Published properties
 
-Not found (probed 2026-08-02, all 404): OpenAPI, `/.well-known/agent-card.json`, `/.well-known/agent.json`, `/.well-known/security.txt`, `/.well-known/api-catalog`, `/.well-known/ai-plugin.json`. No status page, no bug bounty, no trust center, no first-party SDK or CLI.
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-- Secondary market: https://forgeglobal.com/bobbie_stock/
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [bobbie-mcp.yml](https://apis.io/servers/bobbie/bobbie-mcp-yml/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Bobbie Agentic Access](https://apis.io/agentic-access/bobbie/bobbie-agentic-access/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Bobbie Authentication](https://apis.io/security/bobbie/bobbie-authentication/)
+- [Bobbie Domain Security](https://apis.io/security/bobbie/bobbie-domain-security/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Bobbie Scopes](https://apis.io/scopes/bobbie/bobbie-scopes/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.hibobbie.com/)
+- [Documentation](https://www.hibobbie.com/agents.md)
+- [Sign up](https://www.hibobbie.com/account/register)
+- [Support](https://www.hibobbie.com/pages/help-center)
+- [Blog](https://milk-drunk.com/)
+- [Terms of service](https://www.hibobbie.com/policies/terms-of-service)
+- [Privacy policy](https://www.hibobbie.com/policies/privacy-policy)
+
+## API Evangelist rating
+
+**Kin Score 28.9** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 80.8 |
+| Contract quality | 10.4 |
+| Contract governance | 18.2 |
+| Operational transparency | 0.0 |
+| Developer ergonomics | 30.4 |
+| Access clarity | 34.2 |
+
+**Agent readiness 35.6** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | yes |
+| Reversibility Documented | — |
+| MCP Server | platform (partial credit) |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | derived (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | — |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | platform (partial credit) |
+
+**Regulatory alignment 32.8** — Health
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/bobbie/](https://apis.io/providers/bobbie/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Bobbie: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/bobbie/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
